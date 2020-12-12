@@ -20,3 +20,23 @@ for adapter in adapters:
     joltage = adapter
 
 print("Part1: 1-jolt: {}, 3-jolt: {}, product: {}".format(one_jolt_cnt, three_jolt_cnt, one_jolt_cnt*three_jolt_cnt))
+
+scores = {}
+adapters += [0, max(adapters) + 3]
+adapters.sort()
+adapters.reverse()
+for key, adapter in enumerate(adapters):
+    next_adapters = adapters[:key][-3:]
+
+    if not next_adapters:
+        scores[adapter] = 1
+        continue
+
+    scores[adapter] = 0
+    for next_adapter in next_adapters:
+        is_valid = next_adapter - adapter <= 3
+        if is_valid:
+            scores[adapter] += scores[next_adapter]
+            # print('Count', scores[adapter], 'Next adapter', next_adapter)
+
+print('Part2 {}'.format(scores[0]))
