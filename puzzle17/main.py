@@ -10,6 +10,22 @@ def count_active_neighbors(cube_coord, cubes):
             yield (cube_coord[0]+direction[0], cube_coord[1]+direction[1], cube_coord[2]+direction[2])
     return count_gen(filter(lambda n: n in cubes and cubes[n], generate_neighbors()))
 
+def visualize(cubes):
+    min_max = (min(map(lambda c:c[0], cubes.keys())), max(map(lambda c:c[0], cubes.keys())))
+    zrange = (min(map(lambda c:c[2], cubes.keys())), max(map(lambda c:c[2], cubes.keys())))
+    print("z: {}: min/max: {}".format(zrange, min_max))
+    for z in range(zrange[0], zrange[1]+1):
+        print("z = {}".format(z))
+        layer = []
+        for y in range(min_max[0], min_max[1]+1):
+            row = []
+            for x in range(min_max[0], min_max[1]+1):
+                cube = (x,y,z)
+                row.append("#" if (x,y,z) in cubes and cubes[(x,y,z)] else ".")
+            layer.append("".join(row))
+        print("\n".join(layer))
+        print("\n")
+
 cubes = {}
 
 x = y = z = 0
@@ -24,7 +40,9 @@ for c in sys.stdin.read():
         cubes[(x,y,z)] = False
     x += 1
 
-print("Cubes: {}".format(cubes))
+
+visualize(cubes)
+print("START")
 
 for c in range(6):
     new_cubes = {}
@@ -40,7 +58,8 @@ for c in range(6):
                 else:
                     print("Setting inactive {} with {} to {}".format(cube, active_neighbors, active_neighbors == 3))
                     new_cubes[cube] = active_neighbors == 3
-    print("new cubes: {}".format(new_cubes))
+    visualize(new_cubes)
+    print(" ======= ======= =======")
     cubes = new_cubes
 
 print("Part1: {}".format(list(filter(lambda c: c, cubes.values()))))
